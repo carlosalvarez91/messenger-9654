@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
+import { updateMessage } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,6 +35,12 @@ const useStyles = makeStyles(() => ({
 const OtherUserBubble = (props) => {
   const classes = useStyles();
   const { text, time, otherUser } = props;
+
+  useEffect(() => {
+    //set is seen
+    updateMessage({msgId: props.id});
+  }, [])
+
   return (
     <Box className={classes.root}>
       <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>

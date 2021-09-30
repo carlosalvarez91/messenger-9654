@@ -6,8 +6,24 @@ from rest_framework.views import APIView
 
 
 class Messages(APIView):
-    """expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)"""
+    '''set message is_seen'''
+    def put(self, request, id):
+        try:
+            user = get_user(request)
+            if user.is_anonymous:
+                return HttpResponse(status=401)
+        except Exception as e:
+            return HttpResponse(status=500)
+        try:
+            message = Message.objects.get(id=id)
+            message.is_seen = True
+            message.save()
+            return HttpResponse(status=202)
+        except Message.DoesNotExist:
+            return HttpResponse(status=404)
 
+
+    """expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)"""
     def post(self, request):
         try:
             user = get_user(request)

@@ -83,6 +83,13 @@ const saveMessage = async (body) => {
   return data;
 };
 
+// this should do more things,
+// e.g: emiting a message in websockets so the other user can see in real time when the message is seen but keep it simple for now
+export const updateMessage = async ({msgId}) =>{
+  const { data } = await axios.put(`/api/messages/${msgId}`);
+  return data;
+}
+
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
