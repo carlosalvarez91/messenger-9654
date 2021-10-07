@@ -13,9 +13,11 @@ export const addMessageToStore = (state, payload) => {
 
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
-      convo.messages.push(message);
-      convo.latestMessageText = message.text;
-      return convo;
+      //https://redux.js.org/faq/react-redux#why-isnt-my-component-re-rendering-or-my-mapstatetoprops-running
+      let copyConvo = convo
+      copyConvo.messages.push(message)
+      copyConvo.latestMessageText = message.text;
+      return copyConvo;
     } else {
       return convo;
     }
