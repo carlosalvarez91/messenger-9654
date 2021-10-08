@@ -59,7 +59,7 @@ const mapStateToProps = (state) => {
       state.conversations.find(
         (conversation) => conversation.otherUser.username === state.activeConversation
       )
-    }
+  };
 };
 
 export default connect(mapStateToProps, null)(ActiveChat);
