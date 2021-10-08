@@ -28,7 +28,7 @@ class Conversations(APIView):
                         "messages", queryset=Message.objects.order_by("createdAt")
                     )
                 )
-                .all()
+                .all().order_by("-updatedAt")
             )
 
             conversations_response = []
