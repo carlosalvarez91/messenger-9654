@@ -14,7 +14,8 @@ export const addMessageToStore = (state, payload) => {
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
       //https://redux.js.org/faq/react-redux#why-isnt-my-component-re-rendering-or-my-mapstatetoprops-running
-      let copyConvo = convo
+      // use a shallow copy of the state
+      let copyConvo = {...convo}
       copyConvo.messages.push(message)
       copyConvo.latestMessageText = message.text;
       return copyConvo;

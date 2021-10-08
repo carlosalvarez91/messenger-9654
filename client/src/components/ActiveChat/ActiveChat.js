@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
 const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
-   const conversation = props.conversation || {};
+  const conversation = props.conversation || {};
 
   return (
     <Box className={classes.root}>
@@ -59,7 +59,7 @@ const mapStateToProps = (state) => {
       state.conversations.find(
         (conversation) => conversation.otherUser.username === state.activeConversation
       )
-  };
+    }
 };
 
 export default connect(mapStateToProps, null)(ActiveChat);
