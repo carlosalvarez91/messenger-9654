@@ -77,7 +77,7 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       copyConvo.latestMessageText = message.text;
       return copyConvo;
     } else {
-      return copyConvo;
+      return convo;
     }
   });
 };
