@@ -34,11 +34,14 @@ const useStyles = makeStyles(() => ({
 
 const OtherUserBubble = (props) => {
   const classes = useStyles();
-  const { text, time, otherUser } = props;
+  const { text, time, otherUser, id, isSeen, convoId } = props;
 
   useEffect(() => {
-    //set is seen
-    updateMessage({msgId: props.id});
+
+    if (!isSeen){
+      updateMessage({msgId: id, convoId});
+    }
+
   }, [])
 
   return (
