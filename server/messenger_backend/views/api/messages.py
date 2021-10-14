@@ -15,12 +15,16 @@ class Messages(APIView):
         except Exception as e:
             return HttpResponse(status=500)
         try:
-            message = Message.objects.get(id=id)
-            message.is_seen = True
-            message.save()
+            last_message = Message.objects.get(id=id)
+            conversation_id = last_message.conversation_id
+            messages = Message.objects.filter(
+                conversation_id=conversation_id, 
+                createdAt__lte=last_message.createdAt
+                ).update(is_seen = True)
+
             return HttpResponse(status=202)
         except Message.DoesNotExist:
-            return HttpResponse(status=404)
+            return HttpResponse(status=204)
 
 
     """expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)"""

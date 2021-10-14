@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,23 +25,41 @@ const useStyles = makeStyles(() => ({
   bubble: {
     background: "#F4F6FA",
     borderRadius: "10px 10px 0 10px"
+  },
+  avatar: {
+    width:20,
+    height:20
   }
 }));
 
 const SenderBubble = (props) => {
   const classes = useStyles();
-  const { time, text, isSeen, otherUser, index, messagesLength } = props;
+  const { time, text, otherUser, messageId, conversation } = props;
+  let filtered = conversation.messages.filter(c=>c.senderId!==otherUser.id && c.is_seen)
+  let lastSeenMessage = filtered[filtered.length - 1]
+
   return (
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.bubble}>
       <Typography className={classes.text}>{text}</Typography>
       </Box>
-      {isSeen && index === messagesLength-1 &&
-      <Avatar style={{width:20, height:20}} alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
+      {lastSeenMessage.id === messageId &&
+      <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
       }
     </Box>
   );
 };
 
-export default SenderBubble;
+
+const mapStateToProps = (state) => {
+  return {
+    conversation:
+      state.conversations &&
+      state.conversations.find(
+        (conversation) => conversation.otherUser.username === state.activeConversation
+      )
+    }
+};
+
+export default connect(mapStateToProps, null)(SenderBubble);

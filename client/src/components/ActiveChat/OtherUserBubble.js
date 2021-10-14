@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
 import { updateMessage } from "../../store/utils/thunkCreators";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,12 +35,16 @@ const useStyles = makeStyles(() => ({
 
 const OtherUserBubble = (props) => {
   const classes = useStyles();
-  const { text, time, otherUser, id, isSeen, convoId } = props;
+  const { text, time, otherUser, id, conversation } = props;
 
   useEffect(() => {
 
-    if (!isSeen){
-      updateMessage({msgId: id, convoId});
+    let filtered = conversation.messages.filter(c=>c.senderId==otherUser.id)
+    let lastMessage = filtered[filtered.length - 1]
+
+    if (lastMessage && !lastMessage.is_seen ){
+      
+      updateMessage({msgId: id, convoId: conversation.id});
     }
 
   }, [])
@@ -59,4 +64,15 @@ const OtherUserBubble = (props) => {
   );
 };
 
-export default OtherUserBubble;
+const mapStateToProps = (state) => {
+  return {
+    conversation:
+      state.conversations &&
+      state.conversations.find(
+        (conversation) => conversation.otherUser.username === state.activeConversation
+      )
+    }
+};
+
+export default connect(mapStateToProps, null)(OtherUserBubble);
+
