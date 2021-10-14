@@ -39,7 +39,7 @@ const OtherUserBubble = (props) => {
 
   useEffect(() => {
 
-    let filtered = conversation.messages.filter(c=>c.senderId==otherUser.id)
+    let filtered = conversation.messages.filter(c=>c.senderId===otherUser.id)
     let lastMessage = filtered[filtered.length - 1]
 
     if (lastMessage && !lastMessage.is_seen ){
