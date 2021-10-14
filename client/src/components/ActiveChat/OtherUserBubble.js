@@ -76,8 +76,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateMessage: (id) => {
-      dispatch(updateMessage(id));
+    updateMessage: ({msgId, convoId}) => {
+      dispatch(updateMessage({msgId, convoId}));
     }
   };
 };
