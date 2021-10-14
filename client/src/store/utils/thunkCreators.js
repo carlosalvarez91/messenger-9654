@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  setSeenMessage
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -84,14 +85,21 @@ const saveMessage = async (body) => {
 };
 
 
-export const updateMessage = async ({msgId, convoId}) =>{
-  const { data } = await axios.put(`/api/messages/${msgId}`);
-  socket.emit("message-seen", {
-    message: msgId,
-    conversation: convoId
-  });
-  return data;
-}
+export const updateMessage =  ({msgId, convoId}) => async (dispatch) => {
+  try {
+    const response = await axios.put(`/api/messages/${msgId}`);
+
+    socket.emit("message-seen", {
+      message: msgId,
+      conversation: convoId
+    });
+
+    dispatch(setSeenMessage(msgId, convoId));
+
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const sendMessage = (data, body) => {
   socket.emit("new-message", {

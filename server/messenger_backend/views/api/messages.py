@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 
 class Messages(APIView):
-    '''set message is_seen'''
+    '''set messages is_seen'''
     def put(self, request, id):
         try:
             user = get_user(request)
@@ -16,13 +16,16 @@ class Messages(APIView):
             return HttpResponse(status=500)
         try:
             last_message = Message.objects.get(id=id)
-            conversation_id = last_message.conversation_id
-            messages = Message.objects.filter(
-                conversation_id=conversation_id, 
-                createdAt__lte=last_message.createdAt
-                ).update(is_seen = True)
+            conversation = last_message.conversation
+            if user.id == conversation.user1_id or user.id == conversation.user2_id:
+                messages = Message.objects.filter(
+                    conversation_id=conversation.id, 
+                    createdAt__lte=last_message.createdAt
+                    ).update(is_seen = True)
 
-            return HttpResponse(status=202)
+                return HttpResponse(status=202)
+            else:
+                return HttpResponse(status=403)
         except Message.DoesNotExist:
             return HttpResponse(status=204)
 

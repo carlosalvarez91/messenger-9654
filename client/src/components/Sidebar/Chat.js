@@ -1,5 +1,5 @@
-import React from "react";
-import { Box } from "@material-ui/core";
+import React, {useEffect, useState} from "react";
+import { Box, Badge } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
@@ -16,17 +16,29 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     }
+  },notSeenCountBadge:{
+    marginTop: "20px",
+    marginRight: "30px",
   }
 }));
 
 const Chat = (props) => {
+  const [countUnseenMessages, setCountUnseenMessages] = useState(0)
   const classes = useStyles();
   const { conversation } = props;
   const { otherUser } = conversation;
 
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
+    setCountUnseenMessages(0)
   };
+
+  useEffect(() => {
+      setCountUnseenMessages(
+        conversation.messages
+        .filter(c=>c.senderId === otherUser.id && !c.is_seen).length
+      )
+  }, [conversation]);
 
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
@@ -36,7 +48,9 @@ const Chat = (props) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent conversation={conversation} countUnseenMessages={countUnseenMessages}/>
+      <Badge className={classes.notSeenCountBadge} badgeContent={countUnseenMessages} color="primary"> 
+      </Badge>
     </Box>
   );
 };

@@ -35,7 +35,7 @@ const useStyles = makeStyles(() => ({
 
 const OtherUserBubble = (props) => {
   const classes = useStyles();
-  const { text, time, otherUser, id, conversation } = props;
+  const { text, time, otherUser, id, conversation, updateMessage } = props;
 
   useEffect(() => {
 
@@ -74,5 +74,14 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, null)(OtherUserBubble);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateMessage: (id) => {
+      dispatch(updateMessage(id));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OtherUserBubble);
+
 
