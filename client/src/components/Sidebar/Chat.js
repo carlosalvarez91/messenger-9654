@@ -49,8 +49,7 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} countUnseenMessages={countUnseenMessages}/>
-      <Badge className={classes.notSeenCountBadge} badgeContent={countUnseenMessages} color="primary"> 
-      </Badge>
+      <Badge className={classes.notSeenCountBadge} badgeContent={countUnseenMessages} color="primary"/> 
     </Box>
   );
 };

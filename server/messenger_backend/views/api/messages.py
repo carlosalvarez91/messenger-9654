@@ -3,31 +3,27 @@ from django.http import HttpResponse, JsonResponse
 from messenger_backend.models import Conversation, Message
 from online_users import online_users
 from rest_framework.views import APIView
+from mixins.auth import ConversationPermissionMixin
 
 
 class Messages(APIView):
+    permission_classes = (ConversationPermissionMixin,)
+    
     '''set messages is_seen'''
     def put(self, request, id):
         try:
-            user = get_user(request)
-            if user.is_anonymous:
-                return HttpResponse(status=401)
-        except Exception as e:
-            return HttpResponse(status=500)
-        try:
             last_message = Message.objects.get(id=id)
             conversation = last_message.conversation
-            if user.id == conversation.user1_id or user.id == conversation.user2_id:
-                messages = Message.objects.filter(
-                    conversation_id=conversation.id, 
-                    createdAt__lte=last_message.createdAt
-                    ).update(is_seen = True)
-
-                return HttpResponse(status=202)
-            else:
-                return HttpResponse(status=403)
+            self.check_object_permissions(request, conversation)
         except Message.DoesNotExist:
             return HttpResponse(status=204)
+
+        Message.objects.filter(
+            conversation_id=conversation.id, 
+            createdAt__lte=last_message.createdAt
+            ).update(is_seen = True)
+
+        return HttpResponse(status=202)
 
 
     """expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)"""

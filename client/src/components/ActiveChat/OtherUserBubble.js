@@ -35,16 +35,13 @@ const useStyles = makeStyles(() => ({
 
 const OtherUserBubble = (props) => {
   const classes = useStyles();
-  const { text, time, otherUser, id, conversation, updateMessage } = props;
+  const { text, time, otherUser, id, conversationId, updateMessage, lastMessage } = props;
 
   useEffect(() => {
 
-    let filtered = conversation.messages.filter(c=>c.senderId===otherUser.id)
-    let lastMessage = filtered[filtered.length - 1]
-
     if (lastMessage && !lastMessage.is_seen ){
       
-      updateMessage({msgId: id, convoId: conversation.id});
+      updateMessage({msgId: id, convoId: conversationId});
     }
 
   }, [])
@@ -64,15 +61,6 @@ const OtherUserBubble = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    conversation:
-      state.conversations &&
-      state.conversations.find(
-        (conversation) => conversation.otherUser.username === state.activeConversation
-      )
-    }
-};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -82,6 +70,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OtherUserBubble);
+export default connect(null, mapDispatchToProps)(OtherUserBubble);
 
 
