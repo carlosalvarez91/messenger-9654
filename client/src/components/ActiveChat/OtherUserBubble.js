@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
+import { updateMessage } from "../../store/utils/thunkCreators";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -33,7 +35,17 @@ const useStyles = makeStyles(() => ({
 
 const OtherUserBubble = (props) => {
   const classes = useStyles();
-  const { text, time, otherUser } = props;
+  const { text, time, otherUser, id, conversationId, updateMessage, lastMessage } = props;
+
+  useEffect(() => {
+
+    if (lastMessage && !lastMessage.is_seen ){
+      
+      updateMessage({msgId: id, convoId: conversationId});
+    }
+
+  }, [])
+
   return (
     <Box className={classes.root}>
       <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
@@ -49,4 +61,15 @@ const OtherUserBubble = (props) => {
   );
 };
 
-export default OtherUserBubble;
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateMessage: ({msgId, convoId}) => {
+      dispatch(updateMessage({msgId, convoId}));
+    }
+  };
+};
+
+export default connect(null, mapDispatchToProps)(OtherUserBubble);
+
+
