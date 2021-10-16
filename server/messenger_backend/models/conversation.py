@@ -3,16 +3,17 @@ from django.db.models import Q
 
 from . import utils
 from .user import User
-
+import uuid
 
 class Conversation(utils.CustomModel):
-
-    user1 = models.ForeignKey(
-        User, on_delete=models.CASCADE, db_column="user1Id", related_name="+"
-    )
-    user2 = models.ForeignKey(
-        User, on_delete=models.CASCADE, db_column="user2Id", related_name="+", 
-    )
+    title = models.TextField(null=True)
+    uuid = models.CharField(
+         blank=False, null=True,
+         default = uuid.uuid4,
+         editable = False,
+         max_length=255
+         )
+    users = models.ManyToManyField(User, related_name='conversations', related_query_name='conversation')
     createdAt = models.DateTimeField(auto_now_add=True, db_index=True)
     updatedAt = models.DateTimeField(auto_now=True)
 
